@@ -11,7 +11,7 @@ class EducationStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,13 @@ class EducationStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'institution_name' => 'required|string|min:1|max:255',
+            'major' => 'required|string|min:1|max:255',
+            'start_year' => 'required|integer|min:1900|max:9999',
+            'end_year' => 'integer|min:1900|max:9999|required_if:until_now,0',
+            'until_now' => 'boolean',
+            'gpa' => 'numeric|min:0|max:4',
+            'flag' => 'string|min:1|max:255',
         ];
     }
 }

@@ -9,10 +9,20 @@ use App\Http\Requests\EducationUpdateRequest;
 use App\Http\Resources\EducationCollection;
 use App\Http\Resources\EducationResource;
 use App\QueryBuilders\EducationBuilder;
+use App\Services\EducationService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class EducationController extends Controller
 {
     use ApiResponseTrait;
+
+    protected $educationService;
+
+    public function __construct(EducationService $educationService)
+    {
+        $this->educationService = $educationService;
+    }
 
     /**
      * Display a listing of the resource.
@@ -30,7 +40,18 @@ class EducationController extends Controller
      */
     public function store(EducationStoreRequest $request)
     {
-        //
+        try {
+            $newEducationData = $request->validated();
+            $education = $this->educationService->create($newEducationData);
+
+            return $this->sendSuccess(
+                new EducationResource($education),
+                'Education data created successfully.',
+                201
+            );
+        } catch (\Throwable $e) {
+            return $this->sendError('Failed to store education data.', 500);
+        }
     }
 
     /**

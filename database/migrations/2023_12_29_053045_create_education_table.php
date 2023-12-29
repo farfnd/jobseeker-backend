@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('institution_name');
             $table->string('major');
             $table->year('start_year');
-            $table->year('end_year');
+            $table->year('end_year')->nullable();
             $table->boolean('until_now');
             $table->double('gpa')->nullable();
             $table->string('flag');
