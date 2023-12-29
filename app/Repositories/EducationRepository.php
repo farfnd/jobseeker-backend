@@ -7,9 +7,15 @@ use Illuminate\Support\Collection;
 
 class EducationRepository
 {
-    public function createEducation(array $data): Education
+    public function create(array $data): Education
     {
         return Education::create($data);
+    }
+
+    public function update(array $data, Education $education): Education
+    {
+        $education->update($data);
+        return $education;
     }
 
     public function getLatestEducationForUser(int $userId): ?Education

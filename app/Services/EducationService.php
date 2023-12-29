@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Candidate;
+use App\Models\Education;
 use App\Repositories\EducationRepository;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\DB;
 
 class EducationService
@@ -24,9 +27,8 @@ class EducationService
         try {
             DB::beginTransaction();
 
-            $education = $this->educationRepository->createEducation($data);
-            $latestEducation = $this->educationRepository->getLatestEducationForUser($user->id);
-            $user->update(['last_educ' => $latestEducation->id]);
+            $education = $this->educationRepository->create($data);
+            $this->updateUserLatestEducation($user);
 
             DB::commit();
 
@@ -35,5 +37,33 @@ class EducationService
             DB::rollBack();
             throw $e;
         }
+    }
+
+    public function update(array $data, Education $education)
+    {
+        $user = auth()->user();
+        if ($education->candidate_id !== $user->id) {
+            throw new \Exception('You are not authorized to update this education data.', 403);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $education = $this->educationRepository->update($data, $education);
+            $this->updateUserLatestEducation($user);
+
+            DB::commit();
+
+            return $education;
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    private function updateUserLatestEducation(Authenticatable $user)
+    {
+        $latestEducation = $this->educationRepository->getLatestEducationForUser($user->id);
+        $user->update(['last_educ' => $latestEducation->id]);
     }
 }

@@ -70,7 +70,21 @@ class EducationController extends Controller
      */
     public function update(EducationUpdateRequest $request, Education $education)
     {
-        //
+        try {
+            $updateData = $request->validated();
+            $education = $this->educationService->update($updateData, $education);
+
+            return $this->sendSuccess(
+                new EducationResource($education),
+                'Education data updated successfully.',
+                200
+            );
+        } catch (\Throwable $e) {
+            return $this->sendError(
+                $e->getMessage() ?? 'Failed to store education data.',
+                $e->getCode() ?? 500
+            );
+        }
     }
 
     /**

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('position');
             $table->text('job_desc');
             $table->year('start_year');
-            $table->year('end_year');
+            $table->year('end_year')->nullable();
             $table->boolean('until_now');
             $table->string('flag');
             $table->timestamps();
