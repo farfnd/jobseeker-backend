@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Support\Traits\HasMacros;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    use HasMacros;
+
     /**
      * Register any application services.
      */
@@ -19,6 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->registerWhereLikeMacroToBuilder();
     }
 }
