@@ -7,6 +7,7 @@ use App\Models\Education;
 use App\Http\Requests\EducationStoreRequest;
 use App\Http\Requests\EducationUpdateRequest;
 use App\Http\Resources\EducationCollection;
+use App\Http\Resources\EducationResource;
 use App\QueryBuilders\EducationBuilder;
 
 class EducationController extends Controller
@@ -25,14 +26,6 @@ class EducationController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(EducationStoreRequest $request)
@@ -43,17 +36,12 @@ class EducationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Education $education)
+    public function show(EducationBuilder $builder, int $educationId)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Education $education)
-    {
-        //
+        return $this->sendSuccess(
+            new EducationResource($builder->find($educationId)),
+            'Education data retrieved successfully.'
+        );
     }
 
     /**

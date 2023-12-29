@@ -23,6 +23,10 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
-    Route::get('/educations', [EducationController::class, 'index']);
+    Route::prefix('educations')->name('education')->group(function () {
+        Route::get('/', [EducationController::class, 'index']);
+        Route::get('/{id}', [EducationController::class, 'show']);
+    });
+
     Route::post('/logout', [AuthController::class, 'logout']);
 });
