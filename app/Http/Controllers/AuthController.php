@@ -12,31 +12,53 @@ class AuthController extends Controller
 {
     use ApiResponseTrait;
 
+    private $loginValidator;
+
+    private $loginService;
+
+    public function __construct(CandidateLoginValidator $loginValidator, CandidateLoginService $loginService)
+    {
+        $this->loginValidator = $loginValidator;
+        $this->loginService = $loginService;
+    }
+
     public function login(Request $request)
     {
-        $validator = CandidateLoginValidator::validate($request->all());
+        $validator = $this->loginValidator->validate($request->all());
 
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), 422);
         }
 
-        $credentials = [
-            'email' => $request->email,
-            'password' => $request->password,
-        ];
+        $credentials = $this->getCredentials($request);
 
-        $user = CandidateLoginService::attemptLogin(
+        $user = $this->loginService->attemptLogin(
             $credentials,
             $request->latitude,
             $request->longitude
         );
 
+        return $this->handleLoginResponse($user);
+    }
+
+    private function getCredentials(Request $request): array
+    {
+        $loginField = $request->input('login');
+
+        return [
+            filter_var($loginField, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone' => $loginField,
+            'password' => $request->password,
+        ];
+    }
+
+    private function handleLoginResponse($user)
+    {
         if ($user) {
             $token = $user->createToken('authToken')->plainTextToken;
             return $this->sendSuccess(['token' => $token], 'Login successful', 200);
         }
 
-        return $this->sendError('Wrong credentials', 401);
+        return $this->sendError('Wrong credentials or user does not exist', 401);
     }
 
     public function logout(Request $request)
