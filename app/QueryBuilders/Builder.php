@@ -78,7 +78,7 @@ abstract class Builder
     abstract protected function getDefaultSort(): string;
 
     /**
-     * Find the cms admin model based on the given id number.
+     * Find the model based on the given id number.
      *
      * @param int $key
      *

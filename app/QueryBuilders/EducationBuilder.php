@@ -35,7 +35,6 @@ class EducationBuilder extends Builder
     {
         return [
             AllowedFilter::exact('id'),
-            AllowedFilter::exact('candidate_id'),
             AllowedFilter::partial('institution_name'),
             AllowedFilter::partial('major'),
             AllowedFilter::exact('start_year'),
