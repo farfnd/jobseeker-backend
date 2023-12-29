@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Candidate;
 use App\Models\Education;
 use App\Repositories\EducationRepository;
 use Illuminate\Contracts\Auth\Authenticatable;

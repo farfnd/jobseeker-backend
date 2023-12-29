@@ -4,16 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Http\Responses\ApiResponseTrait;
 use App\Models\Experience;
-use App\Http\Requests\StoreExperienceRequest;
+use App\Http\Requests\ExperienceStoreRequest;
 use App\Http\Requests\UpdateExperienceRequest;
 use App\Http\Resources\ExperienceCollection;
 use App\Http\Resources\ExperienceResource;
 use App\QueryBuilders\ExperienceBuilder;
-
+use App\Services\ExperienceService;
 
 class ExperienceController extends Controller
 {
     use ApiResponseTrait;
+
+    protected $experienceService;
+
+    public function __construct(ExperienceService $experienceService)
+    {
+        $this->experienceService = $experienceService;
+    }
 
     /**
      * Display a listing of the resource.
@@ -29,9 +36,20 @@ class ExperienceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreExperienceRequest $request)
+    public function store(ExperienceStoreRequest $request)
     {
-        //
+        try {
+            $newExperienceData = $request->validated();
+            $experience = $this->experienceService->create($newExperienceData);
+
+            return $this->sendSuccess(
+                new ExperienceResource($experience),
+                'Experience data created successfully.',
+                201
+            );
+        } catch (\Throwable $e) {
+            return $this->sendError('Failed to store experience data.', 500);
+        }
     }
 
     /**
