@@ -89,6 +89,18 @@ class ExperienceController extends Controller
      */
     public function destroy(Experience $experience)
     {
-        //
+        $this->authorize('delete', $experience);
+
+        try {
+            $experience->delete();
+
+            return $this->sendSuccess(
+                null,
+                'Experience data deleted successfully.',
+                200
+            );
+        } catch (\Throwable $e) {
+            return $this->sendError('Failed to delete experience data.', 500);
+        }
     }
 }

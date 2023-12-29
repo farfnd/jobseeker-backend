@@ -15,4 +15,12 @@ class ExperiencePolicy
     {
         return $candidate->id === $experience->candidate_id;
     }
+
+    /**
+     * Determine whether the user can delete the model.
+     */
+    public function delete(Candidate $candidate, Experience $experience): bool
+    {
+        return $candidate->id === $experience->candidate_id;
+    }
 }
