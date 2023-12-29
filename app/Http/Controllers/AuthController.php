@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Validators\CandidateLoginValidator;
 use App\Services\CandidateLoginService;
 use App\Http\Responses\ApiResponseTrait;
+use App\Services\GeolocationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,10 +17,16 @@ class AuthController extends Controller
 
     private $loginService;
 
-    public function __construct(CandidateLoginValidator $loginValidator, CandidateLoginService $loginService)
-    {
+    private $geolocationService;
+
+    public function __construct(
+        CandidateLoginValidator $loginValidator,
+        CandidateLoginService $loginService,
+        GeolocationService $geolocationService
+    ) {
         $this->loginValidator = $loginValidator;
         $this->loginService = $loginService;
+        $this->geolocationService = $geolocationService;
     }
 
     public function login(Request $request)
@@ -31,11 +38,13 @@ class AuthController extends Controller
         }
 
         $credentials = $this->getCredentials($request);
+        $latitude = $request->latitude ?? $this->geolocationService->getLatitudeFromIP($request->ip());
+        $longitude = $request->longitude ?? $this->geolocationService->getLongitudeFromIP($request->ip());
 
         $user = $this->loginService->attemptLogin(
             $credentials,
-            $request->latitude,
-            $request->longitude
+            $latitude,
+            $longitude
         );
 
         return $this->handleLoginResponse($user);
