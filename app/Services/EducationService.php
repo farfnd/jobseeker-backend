@@ -42,9 +42,6 @@ class EducationService
     public function update(array $data, Education $education)
     {
         $user = auth()->user();
-        if ($education->candidate_id !== $user->id) {
-            throw new \Exception('You are not authorized to update this education data.', 403);
-        }
 
         try {
             DB::beginTransaction();

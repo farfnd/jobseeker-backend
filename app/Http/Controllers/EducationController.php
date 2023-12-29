@@ -10,8 +10,6 @@ use App\Http\Resources\EducationCollection;
 use App\Http\Resources\EducationResource;
 use App\QueryBuilders\EducationBuilder;
 use App\Services\EducationService;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class EducationController extends Controller
 {
@@ -70,6 +68,8 @@ class EducationController extends Controller
      */
     public function update(EducationUpdateRequest $request, Education $education)
     {
+        $this->authorize('update', $education);
+
         try {
             $updateData = $request->validated();
             $education = $this->educationService->update($updateData, $education);
@@ -80,10 +80,7 @@ class EducationController extends Controller
                 200
             );
         } catch (\Throwable $e) {
-            return $this->sendError(
-                $e->getMessage() ?? 'Failed to store education data.',
-                $e->getCode() ?? 500
-            );
+            return $this->sendError('Failed to store education data.', 500);
         }
     }
 
@@ -92,6 +89,18 @@ class EducationController extends Controller
      */
     public function destroy(Education $education)
     {
-        //
+        $this->authorize('delete', $education);
+
+        try {
+            $education->delete();
+
+            return $this->sendSuccess(
+                null,
+                'Education data deleted successfully.',
+                200
+            );
+        } catch (\Throwable $e) {
+            return $this->sendError('Failed to delete education data.', 500);
+        }
     }
 }
