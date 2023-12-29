@@ -11,6 +11,12 @@ class ExperienceRepository
         return Experience::create($data);
     }
 
+    public function update(array $data, Experience $experience): Experience
+    {
+        $experience->update($data);
+        return $experience;
+    }
+
     public function getLatestExperienceForUser(int $userId): ?Experience
     {
         return Experience::where('candidate_id', $userId)

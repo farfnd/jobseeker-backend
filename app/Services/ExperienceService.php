@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Experience;
 use App\Repositories\ExperienceRepository;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +27,25 @@ class ExperienceService
             DB::beginTransaction();
 
             $experience = $this->experienceRepository->create($data);
+            $this->updateUserLatestExperience($user);
+
+            DB::commit();
+
+            return $experience;
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    public function update(array $data, Experience $experience)
+    {
+        $user = auth()->user();
+
+        try {
+            DB::beginTransaction();
+
+            $experience = $this->experienceRepository->update($data, $experience);
             $this->updateUserLatestExperience($user);
 
             DB::commit();

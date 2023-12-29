@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Responses\ApiResponseTrait;
 use App\Models\Experience;
 use App\Http\Requests\ExperienceStoreRequest;
-use App\Http\Requests\UpdateExperienceRequest;
+use App\Http\Requests\ExperienceUpdateRequest;
 use App\Http\Resources\ExperienceCollection;
 use App\Http\Resources\ExperienceResource;
 use App\QueryBuilders\ExperienceBuilder;
@@ -66,9 +66,22 @@ class ExperienceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateExperienceRequest $request, Experience $experience)
+    public function update(ExperienceUpdateRequest $request, Experience $experience)
     {
-        //
+        $this->authorize('update', $experience);
+
+        try {
+            $updateData = $request->validated();
+            $experience = $this->experienceService->update($updateData, $experience);
+
+            return $this->sendSuccess(
+                new ExperienceResource($experience),
+                'Experience data updated successfully.',
+                200
+            );
+        } catch (\Throwable $e) {
+            return $this->sendError('Failed to store experience data.', 500);
+        }
     }
 
     /**
