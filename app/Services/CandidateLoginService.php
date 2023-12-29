@@ -11,8 +11,8 @@ class CandidateLoginService
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $user->login_date = now();
-            $user->latitude = $latitude;
-            $user->longitude = $longitude;
+            $user->latitude = $latitude ?? $user->latitude;
+            $user->longitude = $longitude ?? $user->longitude;
             $user->save();
 
             return $user;

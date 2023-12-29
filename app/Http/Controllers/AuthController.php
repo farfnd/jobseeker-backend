@@ -6,6 +6,7 @@ use App\Http\Validators\CandidateLoginValidator;
 use App\Services\CandidateLoginService;
 use App\Http\Responses\ApiResponseTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -36,5 +37,15 @@ class AuthController extends Controller
         }
 
         return $this->sendError('Wrong credentials', 401);
+    }
+
+    public function logout(Request $request)
+    {
+        if (Auth::user()) {
+            $request->user()->tokens()->delete();
+            return $this->sendSuccess([], 'Successfully logged out', 200);
+        }
+
+        return $this->sendError('Unauthenticated', 401);
     }
 }
