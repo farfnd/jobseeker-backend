@@ -3,16 +3,24 @@
 namespace App\Http\Responses;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 trait ApiResponseTrait
 {
     protected function sendSuccess($data = [], $message = '', $statusCode = 200): JsonResponse
     {
-        return response()->json([
+        $contents = [
             'success' => true,
             'message' => $message,
-            'data' => $data,
-        ], $statusCode);
+        ];
+
+        $data =
+            $data instanceof JsonResource
+            ? (array) $data->response()->getData()
+            : ['data' => $data];
+        $contents = array_merge($contents, $data);
+
+        return response()->json($contents, $statusCode, [], JSON_UNESCAPED_SLASHES);
     }
 
     protected function sendError($message = 'An error occurred', $statusCode = 500): JsonResponse
