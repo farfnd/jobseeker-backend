@@ -63,4 +63,14 @@ class Candidate extends Authenticatable
     {
         return $this->hasMany(Experience::class, 'candidate_id');
     }
+
+    public function latestEducation()
+    {
+        return $this->hasOne(Education::class, 'id', 'last_educ');
+    }
+
+    public function latestExperience()
+    {
+        return $this->hasOne(Experience::class, 'id', 'last_experience');
+    }
 }

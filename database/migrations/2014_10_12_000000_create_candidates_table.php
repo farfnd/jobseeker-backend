@@ -22,8 +22,6 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone')->unique();
             $table->enum('gender', ['male', 'female']);
-            $table->string('last_educ');
-            $table->string('last_experience');
             $table->dateTime('login_date')->nullable();
             $table->rememberToken();
             $table->timestamps();

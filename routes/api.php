@@ -26,6 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('educations')->name('education')->group(function () {
         Route::get('/', [EducationController::class, 'index']);
         Route::get('/{id}', [EducationController::class, 'show']);
+        Route::post('/', [EducationController::class, 'store']);
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);
