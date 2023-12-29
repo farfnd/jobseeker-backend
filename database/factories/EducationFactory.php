@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Candidate;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,9 +17,9 @@ class EducationFactory extends Factory
      */
     public function definition(): array
     {
-        $candidate = \App\Models\Candidate::inRandomOrder()->first();
+        $candidate = Candidate::inRandomOrder()->first();
         if (!$candidate) {
-            $candidate = \App\Models\Candidate::factory()->create();
+            $candidate = Candidate::factory()->create();
         }
 
         return [

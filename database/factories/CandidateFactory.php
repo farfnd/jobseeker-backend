@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\City;
+use App\Models\Province;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -23,6 +25,18 @@ class CandidateFactory extends Factory
      */
     public function definition(): array
     {
+        $province = Province::inRandomOrder()->first();
+        if (!$province) {
+            $province = Province::factory()->create();
+        }
+
+        $city = $province->cities()->inRandomOrder()->first();
+        if (!$city) {
+            $city = City::factory()->create([
+                'province_id' => $province->id,
+            ]);
+        }
+
         return [
             'full_name' => $this->faker->name,
             'dob' => $this->faker->date,
@@ -33,8 +47,8 @@ class CandidateFactory extends Factory
             'phone' => $this->faker->phoneNumber,
             'password' => static::$password ??= Hash::make('password'),
             'gender' => $this->faker->randomElement(['male', 'female']),
-            'city_id' => $this->faker->numberBetween(1, 10),
-            'province_id' => $this->faker->numberBetween(1, 5),
+            'city_id' => $city->id,
+            'province_id' => $province->id,
             'last_educ' => $this->faker->sentence,
             'last_experience' => $this->faker->sentence,
             'login_date' => now(),
