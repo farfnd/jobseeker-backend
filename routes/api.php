@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EducationController;
+use App\Http\Controllers\ExperienceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::apiResource('educations', EducationController::class);
+    Route::apiResource('experiences', ExperienceController::class);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });

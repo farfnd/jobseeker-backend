@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('candidate_id')->constrained();
             $table->string('company_name');
-            $table->string('company_address');
+            $table->string('company_address', 500);
             $table->string('position');
             $table->text('job_desc');
             $table->year('start_year');

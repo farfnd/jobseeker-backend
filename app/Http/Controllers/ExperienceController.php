@@ -2,26 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Responses\ApiResponseTrait;
 use App\Models\Experience;
 use App\Http\Requests\StoreExperienceRequest;
 use App\Http\Requests\UpdateExperienceRequest;
+use App\Http\Resources\ExperienceCollection;
+use App\Http\Resources\ExperienceResource;
+use App\QueryBuilders\ExperienceBuilder;
+
 
 class ExperienceController extends Controller
 {
+    use ApiResponseTrait;
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(ExperienceBuilder $builder)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return $this->sendSuccess(
+            new ExperienceCollection($builder->paginate()),
+            'Experience data retrieved successfully.'
+        );
     }
 
     /**
@@ -35,17 +37,12 @@ class ExperienceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Experience $experience)
+    public function show(ExperienceBuilder $builder, int $experienceId)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Experience $experience)
-    {
-        //
+        return $this->sendSuccess(
+            new ExperienceResource($builder->find($experienceId)),
+            'Experience data retrieved successfully.'
+        );
     }
 
     /**
