@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Authenticatable
+class Candidate extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -18,9 +18,21 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'full_name',
+        'dob',
+        'latitude',
+        'longitude',
         'email',
+        'phone',
         'password',
+        'gender',
+        'city_id',
+        'province_id',
+        'last_educ',
+        'last_experience',
+        'login_date',
+        'city_id',
+        'province_id',
     ];
 
     /**
@@ -40,6 +52,15 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
     ];
+
+    public function education()
+    {
+        return $this->hasMany(Education::class, 'candidate_id');
+    }
+
+    public function experience()
+    {
+        return $this->hasMany(Experience::class, 'candidate_id');
+    }
 }
