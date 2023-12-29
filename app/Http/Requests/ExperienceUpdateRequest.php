@@ -27,7 +27,7 @@ class ExperienceUpdateRequest extends FormRequest
             'position' => 'string|min:1|max:255',
             'job_desc' => 'string|min:1|max:255',
             'start_year' => 'integer|min:1900|max:9999',
-            'end_year' => 'integer|min:1900|max:9999|required_if:until_now,0',
+            'end_year' => 'integer|min:1900|max:9999',
             'until_now' => 'boolean',
             'flag' => 'string|min:1|max:255',
         ];
