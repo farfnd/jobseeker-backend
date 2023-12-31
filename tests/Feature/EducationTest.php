@@ -94,6 +94,12 @@ class EducationTest extends TestCase
                 'success' => true,
                 'message' => 'Education data created successfully.',
             ]);
+
+        $this->assertDatabaseHas('education', $educationData);
+        $this->assertDatabaseHas('candidates', [
+            'id' => $this->user->id,
+            'last_educ' => Education::first()->id,
+        ]);
     }
 
     public function test_show()
@@ -185,5 +191,39 @@ class EducationTest extends TestCase
                 'success' => true,
                 'message' => 'Education data deleted successfully.',
             ]);
+
+        $this->assertSoftDeleted('education', [
+            'id' => $education->id,
+        ]);
+    }
+
+    public function test_delete_and_update_last_educ()
+    {
+        $education = Education::factory()->create([
+            'candidate_id' => $this->user->id,
+        ]);
+        $this->user->update(['last_educ' => $education->id]);
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->deleteJson("/api/educations/{$education->id}");
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'success',
+                'message',
+            ])
+            ->assertJson([
+                'success' => true,
+                'message' => 'Education data deleted successfully.',
+            ]);
+
+        $this->assertSoftDeleted('education', [
+            'id' => $education->id,
+        ]);
+        $this->assertDatabaseHas('candidates', [
+            'id' => $this->user->id,
+            'last_educ' => null,
+        ]);
     }
 }
