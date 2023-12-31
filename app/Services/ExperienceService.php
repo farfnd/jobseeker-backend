@@ -57,6 +57,23 @@ class ExperienceService
         }
     }
 
+    public function delete(Experience $experience)
+    {
+        $user = auth()->user();
+
+        try {
+            DB::beginTransaction();
+
+            $experience->delete();
+            $this->updateUserLatestExperience($user);
+
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
     private function updateUserLatestExperience(Authenticatable $user)
     {
         $latestExperience = $this->experienceRepository->getLatestExperienceForUser($user->id);

@@ -92,7 +92,7 @@ class ExperienceController extends Controller
         $this->authorize('delete', $experience);
 
         try {
-            $experience->delete();
+            $this->experienceService->delete($experience);
 
             return $this->sendSuccess(
                 null,
