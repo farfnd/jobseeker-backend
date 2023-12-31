@@ -60,6 +60,6 @@ class EducationService
     private function updateUserLatestEducation(Authenticatable $user)
     {
         $latestEducation = $this->educationRepository->getLatestEducationForUser($user->id);
-        $user->update(['last_educ' => $latestEducation->id]);
+        $user->update(['last_educ' => $latestEducation ? $latestEducation->id : null]);
     }
 }

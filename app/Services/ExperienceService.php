@@ -60,6 +60,6 @@ class ExperienceService
     private function updateUserLatestExperience(Authenticatable $user)
     {
         $latestExperience = $this->experienceRepository->getLatestExperienceForUser($user->id);
-        $user->update(['last_experience' => $latestExperience->id]);
+        $user->update(['last_experience' => $latestExperience ? $latestExperience->id : null]);
     }
 }
