@@ -92,7 +92,7 @@ class EducationController extends Controller
         $this->authorize('delete', $education);
 
         try {
-            $education->delete();
+            $this->educationService->delete($education);
 
             return $this->sendSuccess(
                 null,

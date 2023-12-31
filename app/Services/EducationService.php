@@ -57,6 +57,23 @@ class EducationService
         }
     }
 
+    public function delete(Education $education)
+    {
+        $user = auth()->user();
+
+        try {
+            DB::beginTransaction();
+
+            $education->delete();
+            $this->updateUserLatestEducation($user);
+
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
     private function updateUserLatestEducation(Authenticatable $user)
     {
         $latestEducation = $this->educationRepository->getLatestEducationForUser($user->id);
