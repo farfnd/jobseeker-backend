@@ -95,6 +95,13 @@ class ExperienceTest extends TestCase
                 'success' => true,
                 'message' => 'Experience data created successfully.',
             ]);
+
+
+        $this->assertDatabaseHas('experiences', $experienceData);
+        $this->assertDatabaseHas('candidates', [
+            'id' => $this->user->id,
+            'last_experience' => Experience::first()->id,
+        ]);
     }
 
     public function test_show()
@@ -187,5 +194,39 @@ class ExperienceTest extends TestCase
                 'success' => true,
                 'message' => 'Experience data deleted successfully.',
             ]);
+
+        $this->assertSoftDeleted('experiences', [
+            'id' => $experience->id,
+        ]);
+    }
+
+    public function test_delete_and_update_last_experience()
+    {
+        $experience = Experience::factory()->create([
+            'candidate_id' => $this->user->id,
+        ]);
+        $this->user->update(['last_experience' => $experience->id]);
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->deleteJson("/api/experiences/{$experience->id}");
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'success',
+                'message',
+            ])
+            ->assertJson([
+                'success' => true,
+                'message' => 'Experience data deleted successfully.',
+            ]);
+
+        $this->assertSoftDeleted('experiences', [
+            'id' => $experience->id,
+        ]);
+        $this->assertDatabaseHas('candidates', [
+            'id' => $this->user->id,
+            'last_educ' => null,
+        ]);
     }
 }
